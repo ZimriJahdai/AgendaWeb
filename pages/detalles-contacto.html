@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Contacto - Agenda Web</title>
+    <link rel="stylesheet" href="/style/detalles-contacto.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-address-book"></i>
+                <span>Agenda Web</span>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div>
+                    <div id="userEmail">usuario@ejemplo.com</div>
+                    <a href="../index.html" style="color: white; font-size: 12px;">Cerrar sesión</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <nav class="nav-menu">
+        <ul class="nav-links">
+            <li><a href="contactos.html"><i class="fas fa-users"></i> Contactos</a></li>
+            <li><a href="favoritos.html"><i class="fas fa-star"></i> Favoritos</a></li>
+            <li><a href="todo.html"><i class="fas fa-tasks"></i> To-Do List</a></li>
+            <li><a href="perfil.html"><i class="fas fa-user"></i> Perfil</a></li>
+        </ul>
+    </nav>
+    
+    <main class="main-container">
+        <div class="page-title">
+            <h1><i class="fas fa-id-card"></i> Detalles del Contacto</h1>
+            <div>
+                <button class="btn-secondary" onclick="location.href='contactos.html'">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <button class="btn-primary" style="margin-left: 10px;" onclick="location.href='nuevo-contacto.html'">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
+            </div>
+        </div>
+        
+        <div class="details-container">
+            <div class="details-header">
+                <div class="details-avatar">ML</div>
+                <div class="details-main">
+                    <h2>María López</h2>
+                    <p>Amiga</p>
+                </div>
+            </div>
+            
+            <div class="details-section">
+                <h3><i class="fas fa-info-circle"></i> Información de Contacto</h3>
+                <ul class="details-list">
+                    <li>
+                        <i class="fas fa-phone"></i>
+                        <span class="details-label">Teléfono:</span>
+                        <span>+52 55 1234 5678</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-mobile-alt"></i>
+                        <span class="details-label">Celular:</span>
+                        <span>+52 55 8765 4321</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope"></i>
+                        <span class="details-label">Correo electrónico:</span>
+                        <span>maria.lopez@email
