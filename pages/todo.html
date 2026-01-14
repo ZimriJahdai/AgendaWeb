@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List - Agenda Web</title>
+    <link rel="stylesheet" href="/style/todo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-address-book"></i>
+                <span>Agenda Web</span>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div>
+                    <div id="userEmail">usuario@ejemplo.com</div>
+                    <a href="../index.html" style="color: white; font-size: 12px;">Cerrar sesión</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <nav class="nav-menu">
+        <ul class="nav-links">
+            <li><a href="contactos.html"><i class="fas fa-users"></i> Contactos</a></li>
+            <li><a href="favoritos.html"><i class="fas fa-star"></i> Favoritos</a></li>
+            <li><a href="todo.html" class="active"><i class="fas fa-tasks"></i> To-Do List</a></li>
+            <li><a href="perfil.html"><i class="fas fa-user"></i> Perfil</a></li>
+        </ul>
+    </nav>
+    
+    <main class="main-container">
+        <div class="page-title">
+            <h1><i class="fas fa-tasks"></i> Lista de Tareas</h1>
+        </div>
+        
+        <div class="todo-container">
+            <div class="todo-form-container">
+                <h2><i class="fas fa-plus-circle"></i> Nueva Tarea</h2>
+                <form id="todoForm">
+                    <div class="form-group">
+                        <label for="taskTitle">Título de la tarea</label>
+                        <input type="text" id="taskTitle" required placeholder="Ej: Llamar al médico">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="taskDescription">Descripción</label>
+                        <textarea id="taskDescription" rows="3" placeholder="Detalles de la tarea"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="taskPriority">Prioridad</label>
+                        <select id="taskPriority">
+                            <option value="high">Alta</option>
+                            <option value="medium" selected>Media</option>
+                            <option value="low">Baja</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary" style="width: 100%;">
+                        <i class="fas fa-plus"></i> Agregar Tarea
+                    </button>
+                </form>
+                
+                <div style="margin-top: 30px; padding: 15px; background-color: #f8f9ff; border-radius: 8px;">
+                    <h3><i class="fas fa-info-circle"></i> Instrucciones</h3>
+                    <ul style="padding-left: 20px; margin-top: 10px; font-size: 14px;">
+                        <li>Haz clic en el checkbox para marcar como completada</li>
+                        <li>Usa los botones de editar y eliminar para gestionar tareas</li>
+                        <li>Las tareas se ordenan por prioridad (Alta > Media > Baja)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="todo-list-container">
+                <h2><i class="fas fa-list-check"></i> Mis Tareas</h2>
+                <div class="todo-list" id="todoList">
+                    <!-- Las tareas se agregarán dinámicamente aquí -->
+                    <div class="no-tasks" id="noTasksMessage">
+                        <i class="fas fa-clipboard-list" style="font-size: 48px; margin-bottom: 15px;"></i>
+                        <p>No hay tareas pendientes. ¡Agrega tu primera tarea!</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <div>
+                        <span id="taskCount">Total: 0 tareas</span>
+                    </div>
+                    <div>
+                        <button class="btn-secondary" id="clearCompletedBtn">
+                            <i class="fas fa-trash"></i> Limpiar Completadas
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // Clase para gestionar tareas
+        class TodoList {
+            constructor() {
+                this.tasks = this.loadTasks();
+                this.render();
+            }
+            
+            loadTasks() {
+                const savedTasks = localStorage.getItem('todoTasks');
+                if (savedTasks) {
+                    return JSON.parse(savedTasks);
+                }
+                
+                return [
+                    { id: 1, title: "Llamar al médico", description: "Pedir cita para revisión anual", priority: "high", completed: false },
+                    { id: 2, title: "Comprar víveres", description: "Leche, huevos, pan y frutas", priority: "medium", completed: false },
+                    { id: 3, title: "Enviar reporte mensual", description: "Reporte de ventas del mes anterior", priority: "low", completed: true }
+                ];
+            }
+            
+            saveTasks() {
+                localStorage.setItem('todoTasks', JSON.stringify(this.tasks));
+            }
+            
+            addTask(title, description, priority) {
+                const newTask = {
+                    id: Date.now(), 
+                    title,
+                    description,
+                    priority,
+                    completed: false
+                };
+                
+                this.tasks.push(newTask);
+                this.saveTasks();
+                this.render();
+            }
+            
+            deleteTask(id) {
+                this.tasks = this.tasks.filter(task => task.id !== id);
+                this.saveTasks();
+                this.render();
+            }
+            
+            toggleComplete(id) {
+                this.tasks = this.tasks.map(task => {
+                    if (task.id === id) {
+                        return { ...task, completed: !task.completed };
+                    }
+                    return task;
+                });
+                this.saveTasks();
+                this.render();
+            }
+            
+            editTask(id, newTitle, newDescription, newPriority) {
+                this.tasks = this.tasks.map(task => {
+                    if (task.id === id) {
+                        return { 
+                            ...task, 
+                            title: newTitle, 
+                            description: newDescription,
+                            priority: newPriority
+                        };
+                    }
+                    return task;
+                });
+                this.saveTasks();
+                this.render();
+            }
+            
+            clearCompleted() {
+                this.tasks = this.tasks.filter(task => !task.completed);
+                this.saveTasks();
+                this.render();
+            }
+            
+            render() {
+                const todoList = document.getElementById('todoList');
+                const noTasksMessage = document.getElementById('noTasksMessage');
+                const taskCount = document.getElementById('taskCount');
+                
+                
+                const sortedTasks = [...this.tasks].sort((a, b) => {
+                    
+                    if (a.completed && !b.completed) return 1;
+                    if (!a.completed && b.completed) return -1;
+                    
+                    // Luego, ordenar por prioridad
+                    const priorityOrder = { high: 1, medium: 2, low: 3 };
+                    return priorityOrder[a.priority] - priorityOrder[b.priority];
+                });
+                
+                if (sortedTasks.length === 0) {
+                    noTasksMessage.style.display = 'block';
+                    todoList.innerHTML = '';
+                    todoList.appendChild(noTasksMessage);
+                } else {
+                    noTasksMessage.style.display = 'none';
+                    
+                    let todoHTML = '';
+                    
+                    sortedTasks.forEach(task => {
+                        const priorityClass = `priority-${task.priority}`;
+                        const priorityText = task.priority === 'high' ? 'Alta' : 
+                                           task.priority === 'medium' ? 'Media' : 'Baja';
+                        
+                        todoHTML += `
+                            <div class="todo-item" data-id="${task.id}">
+                                <div class="todo-content">
+                                    <input type="checkbox" class="todo-checkbox" ${task.completed ? 'checked' : ''}>
+                                    <div>
+                                        <div class="todo-text ${task.completed ? 'completed' : ''}">${task.title}</div>
+                                        <div style="font-size: 14px; color: #666; margin-top: 5px;">${task.description}</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="todo-priority ${priorityClass}">${priorityText}</span>
+                                    <div class="todo-actions" style="margin-top: 10px;">
+                                        <button class="btn-secondary edit-btn" style="padding: 5px 10px; font-size: 12px;">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn-danger delete-btn" style="padding: 5px 10px; font-size: 12px;">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    todoList.innerHTML = todoHTML;
+                    
+                    
+                    document.querySelectorAll('.todo-checkbox').forEach(checkbox => {
+                        checkbox.addEventListener('change', (e) => {
+                            const taskId = parseInt(e.target.closest('.todo-item').dataset.id);
+                            this.toggleComplete(taskId);
+                        });
+                    });
+                    
+                    document.querySelectorAll('.delete-btn').forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            const taskId = parseInt(e.target.closest('.todo-item').dataset.id);
+                            if (confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
+                                this.deleteTask(taskId);
+                            }
+                        });
+                    });
+                    
+                    document.querySelectorAll('.edit-btn').forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            const taskId = parseInt(e.target.closest('.todo-item').dataset.id);
+                            const task = this.tasks.find(t => t.id === taskId);
+                            
+                            const newTitle = prompt('Editar título:', task.title);
+                            if (newTitle !== null) {
+                                const newDescription = prompt('Editar descripción:', task.description);
+                                if (newDescription !== null) {
+                                    const newPriority = prompt('Editar prioridad (high/medium/low):', task.priority);
+                                    if (newPriority && ['high', 'medium', 'low'].includes(newPriority)) {
+                                        this.editTask(taskId, newTitle, newDescription, newPriority);
+                                    }
+                                }
+                            }
+                        });
+                    });
+                }
+                
+                // Actualizar contador
+                const totalTasks = this.tasks.length;
+                const completedTasks = this.tasks.filter(task => task.completed).length;
+                taskCount.textContent = `Total: ${totalTasks} tareas (${completedTasks} completadas)`;
+            }
+        }
+        
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar login
+            const userEmail = localStorage.getItem('userEmail') || 'usuario@ejemplo.com';
+            document.getElementById('userEmail').textContent = userEmail;
+            
+            const userInitial = userEmail.charAt(0).toUpperCase();
+            document.getElementById('userAvatar').textContent = userInitial;
+            
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (!isLoggedIn || isLoggedIn !== 'true') {
+                window.location.href = '../index.html';
+            }
+            
+            
+            const todoApp = new TodoList();
+            
+            
+            document.getElementById('todoForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const title = document.getElementById('taskTitle').value;
+                const description = document.getElementById('taskDescription').value;
+                const priority = document.getElementById('taskPriority').value;
+                
+                if (title.trim()) {
+                    todoApp.addTask(title, description, priority);
+                    
+                    
+                    document.getElementById('taskTitle').value = '';
+                    document.getElementById('taskDescription').value = '';
+                    document.getElementById('taskPriority').value = 'medium';
+                }
+            });
+            
+            
+            document.getElementById('clearCompletedBtn').addEventListener('click', function() {
+                if (confirm('¿Estás seguro de que quieres eliminar todas las tareas completadas?')) {
+                    todoApp.clearCompleted();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
