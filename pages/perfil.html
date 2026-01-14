@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Agenda Web</title>
+    <link rel="stylesheet" href="/style/perfil.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-address-book"></i>
+                <span>Agenda Web</span>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div>
+                    <div id="userEmail">usuario@ejemplo.com</div>
+                    <a href="../index.html" style="color: white; font-size: 12px;">Cerrar sesión</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <nav class="nav-menu">
+        <ul class="nav-links">
+            <li><a href="contactos.html"><i class="fas fa-users"></i> Contactos</a></li>
+            <li><a href="favoritos.html"><i class="fas fa-star"></i> Favoritos</a></li>
+            <li><a href="todo.html"><i class="fas fa-tasks"></i> To-Do List</a></li>
+            <li><a href="perfil.html" class="active"><i class="fas fa-user"></i> Perfil</a></li>
+        </ul>
+    </nav>
+    
+    <main class="main-container">
+        <div class="profile-container">
+            <div class="profile-sidebar">
+                <div class="profile-avatar" id="profileAvatar">U</div>
+                <h2 class="profile-name" id="profileName">Usuario Ejemplo</h2>
+                <p class="profile-email" id="profileEmail">usuario@ejemplo.com</p>
+                
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Contactos</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Favoritos</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Tareas</div>
+                    </div>
+                </div>
+                
+                <button class="btn-primary" style="width: 100%; margin-top: 30px;">
+                    <i class="fas fa-edit"></i> Editar Perfil
+                </button>
+            </div>
+            
+            <div class="profile-content">
+                <h1><i class="fas fa-user-circle"></i> Información del Perfil</h1>
+                
+                <div class="details-section" style="margin-top: 20px;">
+                    <h3><i class="fas fa-user"></i> Datos Personales</h3>
+                    <ul class="details-list">
+                        <li>
+                            <span class="details-label">Nombre completo:</span>
+                            <span id="personalName">Usuario Ejemplo</span>
+                        </li>
+                        <li>
+                            <span class="details-label">Fecha de nacimiento:</span>
+                            <span>15 de marzo de 1990</span>
+                        </li>
+                        <li>
+                            <span class="details-label">Teléfono:</span>
+                            <span>+52 55 1111 2222</span>
+                        </li>
+                        <li>
+                            <span class="details-label">Dirección:</span>
+                            <span>Calle Ejemplo #123, Ciudad, País</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="details-section">
+                    <h3><i class="fas fa-key"></i> Información de la Cuenta</h3>
+                    <ul class="details-list">
+                        <li>
+                            <span class="details-label">Correo electrónico:</span>
+                            <span id="accountEmail">usuario@ejemplo.com</span>
+                        </li>
+                        <li>
+                            <span class="details-label">Nombre de usuario:</span>
+                            <span>usuario_ejemplo</span>
+                        </li>
+                        <li>
+                            <span class="details-label">Fecha de registro:</span>
+                            <span>15 de enero de 2024</span>
+                        </li>
+                        <li>
+                            <span class="details-label">Estado de la cuenta:</span>
+                            <span style="color: green;">Activa</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="details-section">
+                    <h3><i class="fas fa-cog"></i> Preferencias</h3>
+                    <ul class="details-list">
+                        <li>
+                            <span class="details-label">Idioma:</span>
+                            <span>Español</span>
+                        </li>
+                        <li>
+                            <span class="details-label">Zona horaria:</span>
+                            <span>UTC-6 (Centro de México)</span>
+                        </li>
+                        <li>
+                            <span class="details-label">Notificaciones:</span>
+                            <span>Activadas</span>
+                        </li>
+                        <li>
+                            <span class="details-label">Tema:</span>
+                            <span>Claro</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userEmail = localStorage.getItem('userEmail') || 'usuario@ejemplo.com';
+            document.getElementById('userEmail').textContent = userEmail;
+            
+            // Actualizar todos los lugares donde aparece el email
+            document.querySelectorAll('#profileEmail, #accountEmail').forEach(el => {
+                el.textContent = userEmail;
+            });
+            
+            // Obtener nombre del usuario del email
+            const userName = userEmail.split('@')[0];
+            const formattedName = userName.charAt(0).toUpperCase() + userName.slice(1);
+            document.getElementById('profileName').textContent = formattedName;
+            document.getElementById('personalName').textContent = formattedName;
+            
+            const userInitial = userEmail.charAt(0).toUpperCase();
+            document.getElementById('userAvatar').textContent = userInitial;
+            document.getElementById('profileAvatar').textContent = userInitial;
+            
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (!isLoggedIn || isLoggedIn !== 'true') {
+                window.location.href = '../index.html';
+            }
+        });
+    </script>
+</body>
+</html>
