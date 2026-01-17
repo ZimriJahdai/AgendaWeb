@@ -125,5 +125,36 @@
             });
         });
     </script>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const userEmail = localStorage.getItem('userEmail') || 'usuario@ejemplo.com';
+        document.getElementById('userEmail').textContent = userEmail;
+        
+        // Obtener la inicial para el avatar
+        const userInitial = userEmail.charAt(0).toUpperCase();
+        document.getElementById('userAvatar').textContent = userInitial;
+        
+        // Verificar si el usuario está logueado
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (!isLoggedIn || isLoggedIn !== 'true') {
+            window.location.href = '../index.html';
+        }
+        
+        // Manejar cierre de sesión
+        document.querySelector('a[href="../index.html"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Limpiar datos de sesión
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('todoTasks'); // Opcional: limpiar tareas
+            
+            // Redirigir al login
+            window.location.href = '../index.html';
+        });
+    });
+</script>
 </body>
 </html>

@@ -320,5 +320,31 @@
             });
         });
     </script>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const userEmail = localStorage.getItem('userEmail') || 'usuario@ejemplo.com';
+        document.getElementById('userEmail').textContent = userEmail;
+        
+        const userInitial = userEmail.charAt(0).toUpperCase();
+        document.getElementById('userAvatar').textContent = userInitial;
+        
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (!isLoggedIn || isLoggedIn !== 'true') {
+            window.location.href = '../index.html';
+        }
+        
+        document.querySelector('a[href="../index.html"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('todoTasks'); // Opcional: limpiar tareas
+            
+            window.location.href = '../index.html';
+        });
+    });
+</script>
 </body>
 </html>
