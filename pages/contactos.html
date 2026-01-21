@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="/style/contactos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <header class="header">
         <div class="nav-container">
@@ -23,7 +25,7 @@
             </div>
         </div>
     </header>
-    
+
     <nav class="nav-menu">
         <ul class="nav-links">
             <li><a href="contactos.html" class="active"><i class="fas fa-users"></i> Contactos</a></li>
@@ -32,137 +34,177 @@
             <li><a href="perfil.html"><i class="fas fa-user"></i> Perfil</a></li>
         </ul>
     </nav>
-    
+
     <main class="main-container">
         <div class="page-title">
-            <h1><i class="fas fa-users"></i> Mis Contactos</h1>
-            <a href="nuevoContacto.html" class="btn-primary">
+            <h1><i class="fas fa-users"></i> Mis Contactos <span id="contactCount"
+                    style="font-size: 18px; color: #666; margin-left: 10px;"></span></h1>
+            <a href="/pages/nuevoContacto.html" class="btn-primary">
                 <i class="fas fa-plus"></i> Nuevo Contacto
             </a>
         </div>
-        
-        <div class="contacts-container">
-            <!-- Contacto 1 -->
-            <div class="contact-card" onclick="location.href='detalles-contacto.html?id=1'">
-                <div class="contact-header">
-                    <div class="contact-avatar">ML</div>
-                    <div class="contact-info">
-                        <h3>María López</h3>
-                        <p>Amiga</p>
-                    </div>
-                </div>
-                <ul class="contact-details">
-                    <li><i class="fas fa-phone"></i> +502 1234 5678</li>
-                    <li><i class="fas fa-envelope"></i> maria.lopez@email.com</li>
-                    <li><i class="fas fa-briefcase"></i> Diseñadora Gráfica</li>
-                </ul>
-            </div>
-            
-            <!-- Contacto 2 -->
-            <div class="contact-card" onclick="location.href='detalles-contacto.html?id=2'">
-                <div class="contact-header">
-                    <div class="contact-avatar">CR</div>
-                    <div class="contact-info">
-                        <h3>Carlos Rodríguez</h3>
-                        <p>Colega de trabajo</p>
-                    </div>
-                </div>
-                <ul class="contact-details">
-                    <li><i class="fas fa-phone"></i> +502 2345 6789</li>
-                    <li><i class="fas fa-envelope"></i> c.rodriguez@email.com</li>
-                    <li><i class="fas fa-briefcase"></i> Desarrollador de Software</li>
-                </ul>
-            </div>
-            
-            <!-- Contacto 3 -->
-            <div class="contact-card" onclick="location.href='detalles-contacto.html?id=3'">
-                <div class="contact-header">
-                    <div class="contact-avatar">AG</div>
-                    <div class="contact-info">
-                        <h3>Ana García</h3>
-                        <p>Familiar</p>
-                    </div>
-                </div>
-                <ul class="contact-details">
-                    <li><i class="fas fa-phone"></i> +502 3456 7890</li>
-                    <li><i class="fas fa-envelope"></i> ana.garcia@email.com</li>
-                    <li><i class="fas fa-briefcase"></i> Médico General</li>
-                </ul>
-            </div>
-            
-            <!-- Contacto 4 -->
-            <div class="contact-card" onclick="location.href='detalles-contacto.html?id=4'">
-                <div class="contact-header">
-                    <div class="contact-avatar">PM</div>
-                    <div class="contact-info">
-                        <h3>Pedro Martínez</h3>
-                        <p>Compañero de universidad</p>
-                    </div>
-                </div>
-                <ul class="contact-details">
-                    <li><i class="fas fa-phone"></i> +502 4567 8901</li>
-                    <li><i class="fas fa-envelope"></i> pedro.martinez@email.com</li>
-                    <li><i class="fas fa-briefcase"></i> Arquitecto</li>
-                </ul>
-            </div>
-            
-            <!-- Contacto 5 -->
-            <div class="contact-card" onclick="location.href='detalles-contacto.html?id=5'">
-                <div class="contact-header">
-                    <div class="contact-avatar">LH</div>
-                    <div class="contact-info">
-                        <h3>Laura Hernández</h3>
-                        <p>Vecina</p>
-                    </div>
-                </div>
-                <ul class="contact-details">
-                    <li><i class="fas fa-phone"></i> +502 5678 9012</li>
-                    <li><i class="fas fa-envelope"></i> laura.hdz@email.com</li>
-                    <li><i class="fas fa-briefcase"></i> Contadora Pública</li>
-                </ul>
-            </div>
+
+        <div class="contacts-container" id="contactsList">
         </div>
     </main>
-    
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        function getInitials(fullName) {
+            const names = fullName.split(' ');
+            if (names.length >= 2) {
+                return (names[0].charAt(0) + names[1].charAt(0)).toUpperCase();
+            }
+            return fullName.substring(0, 2).toUpperCase();
+        }
+
+        function saveContactToStorage(contact) {
+            let contacts = JSON.parse(localStorage.getItem('contacts')) || [];
+            contacts.push(contact);
+            localStorage.setItem('contacts', JSON.stringify(contacts));
+        }
+
+        function getCategoryLabel(category) {
+            const categories = {
+                'family': 'Familiar',
+                'friend': 'Amigo',
+                'work': 'Colega de trabajo',
+                'other': 'Otro'
+            };
+            return categories[category] || 'Contacto';
+        }
+
+        function renderContacts() {
+            const contactsList = document.getElementById('contactsList');
+            const contactCount = document.getElementById('contactCount');
+
+            let contacts = JSON.parse(localStorage.getItem('contacts')) || [];
+
+            if (contacts.length === 0) {
+                contacts = [
+                    {
+                        id: '1',
+                        fullName: 'María López',
+                        initials: 'ML',
+                        phone: '+502 2234 5678',
+                        email: 'maria.lopez@email.com',
+                        position: 'Diseñadora Gráfica',
+                        category: 'friend',
+                        isFavorite: false
+                    },
+                    {
+                        id: '2',
+                        fullName: 'Carlos Rodríguez',
+                        initials: 'CR',
+                        phone: '+502 2345 6789',
+                        email: 'c.rodriguez@email.com',
+                        position: 'Desarrollador de Software',
+                        category: 'work',
+                        isFavorite: false
+                    },
+                    {
+                        id: '3',
+                        fullName: 'Ana García',
+                        initials: 'AG',
+                        phone: '+502 3456 7890',
+                        email: 'ana.garcia@email.com',
+                        position: 'Médico General',
+                        category: 'family',
+                        isFavorite: false
+                    },
+                    {
+                        id: '4',
+                        fullName: 'Pedro Martínez',
+                        initials: 'PM',
+                        phone: '+502 4567 8901',
+                        email: 'pedro.martinez@email.com',
+                        position: 'Arquitecto',
+                        category: 'friend',
+                        isFavorite: false
+                    },
+                    {
+                        id: '5',
+                        fullName: 'Laura Hernández',
+                        initials: 'LH',
+                        phone: '+502 5678 9012',
+                        email: 'laura.hdz@email.com',
+                        position: 'Contadora Pública',
+                        category: 'other',
+                        isFavorite: false
+                    }
+                ];
+                localStorage.setItem('contacts', JSON.stringify(contacts));
+            }
+
+            contactCount.textContent = `(${contacts.length} contactos)`;
+
+            contactsList.innerHTML = '';
+
+            contacts.forEach(contact => {
+                const contactCard = document.createElement('div');
+                contactCard.className = 'contact-card';
+                contactCard.dataset.id = contact.id;
+
+                const favoriteBadge = contact.isFavorite ?
+                    `<div class="favorite-badge">
+                        <i class="fas fa-star"></i> Favorito
+                    </div>` : '';
+
+                contactCard.innerHTML = `
+                    <div class="contact-header">
+                        <div class="contact-avatar">${contact.initials}</div>
+                        <div class="contact-info">
+                            <h3>${contact.fullName}</h3>
+                            <p>${getCategoryLabel(contact.category)}</p>
+                            ${favoriteBadge}
+                        </div>
+                    </div>
+                    <ul class="contact-details">
+                        <li><i class="fas fa-phone"></i> ${contact.phone}</li>
+                        ${contact.email ? `<li><i class="fas fa-envelope"></i> ${contact.email}</li>` : ''}
+                        ${contact.position ? `<li><i class="fas fa-briefcase"></i> ${contact.position}</li>` : ''}
+                    </ul>
+                `;
+
+                contactCard.addEventListener('click', function () {
+                    localStorage.setItem('selectedContact', JSON.stringify(contact));
+                    window.location.href = 'detalles-contacto.html';
+                });
+
+                contactsList.appendChild(contactCard);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
             const userEmail = localStorage.getItem('userEmail') || 'usuario@ejemplo.com';
             document.getElementById('userEmail').textContent = userEmail;
-            
+
             const userInitial = userEmail.charAt(0).toUpperCase();
             document.getElementById('userAvatar').textContent = userInitial;
-            
+
             const isLoggedIn = localStorage.getItem('isLoggedIn');
             if (!isLoggedIn || isLoggedIn !== 'true') {
                 window.location.href = '../index.html';
             }
+
+
+            const logoutLink = document.querySelector('a[href="../index.html"]');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('todoTasks');
+
+
+                    window.location.href = '../index.html';
+                });
+            }
+
+
+            renderContacts();
         });
     </script>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const userEmail = localStorage.getItem('userEmail') || 'usuario@ejemplo.com';
-        document.getElementById('userEmail').textContent = userEmail;
-        
-        const userInitial = userEmail.charAt(0).toUpperCase();
-        document.getElementById('userAvatar').textContent = userInitial;
-        
-        const isLoggedIn = localStorage.getItem('isLoggedIn');
-        if (!isLoggedIn || isLoggedIn !== 'true') {
-            window.location.href = '../index.html';
-        }
-        
-        document.querySelector('a[href="../index.html"]').addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            localStorage.removeItem('userEmail');
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('todoTasks'); // Opcional: limpiar tareas
-            
-            window.location.href = '../index.html';
-        });
-    });
-</script>
-
 </body>
+
 </html>

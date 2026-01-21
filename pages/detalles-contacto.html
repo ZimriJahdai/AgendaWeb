@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="/style/detalles-contacto.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <header class="header">
         <div class="nav-container">
@@ -23,7 +25,7 @@
             </div>
         </div>
     </header>
-    
+
     <nav class="nav-menu">
         <ul class="nav-links">
             <li><a href="contactos.html"><i class="fas fa-users"></i> Contactos</a></li>
@@ -32,7 +34,7 @@
             <li><a href="perfil.html"><i class="fas fa-user"></i> Perfil</a></li>
         </ul>
     </nav>
-    
+
     <main class="main-container">
         <div class="page-title">
             <h1><i class="fas fa-id-card"></i> Detalles del Contacto</h1>
@@ -40,66 +42,271 @@
                 <button class="btn-secondary" onclick="location.href='contactos.html'">
                     <i class="fas fa-arrow-left"></i> Volver
                 </button>
-                <button class="btn-primary" style="margin-left: 10px;" onclick="location.href='nuevo-contacto.html'">
+                <button class="btn-primary" style="margin-left: 10px;" id="btnEditar">
                     <i class="fas fa-edit"></i> Editar
+                </button>
+                <button class="btn-danger" style="margin-left: 10px;" id="btnEliminar">
+                    <i class="fas fa-trash"></i> Eliminar
                 </button>
             </div>
         </div>
-        
+
         <div class="details-container">
             <div class="details-header">
-                <div class="details-avatar">ML</div>
+                <div class="details-avatar" id="contactAvatar">ML</div>
                 <div class="details-main">
-                    <h2>María López</h2>
-                    <p>Amiga</p>
+                    <h2 id="contactName">María López</h2>
+                    <p id="contactCategory">Amiga</p>
                 </div>
             </div>
-            
+
             <div class="details-section">
                 <h3><i class="fas fa-info-circle"></i> Información de Contacto</h3>
-                <ul class="details-list">
-                    <li>
-                        <i class="fas fa-phone"></i>
-                        <span class="details-label">Teléfono:</span>
-                        <span>+502 1234 5678</span>
-                    </li>
-                    <li>
-                        <i class="fas fa-mobile-alt"></i>
-                        <span class="details-label">Celular:</span>
-                        <span>+502 8765 4321</span>
-                    </li>
-                    <li>
-                        <i class="fas fa-envelope"></i>
-                        <span class="details-label">Correo electrónico:</span>
-                        <span>maria.lopez@email
+                <ul class="details-list" id="contactInfoList">
+
+                </ul>
+            </div>
+
+            <div class="details-section" id="notesSection">
+                <h3><i class="fas fa-sticky-note"></i> Notas</h3>
+                <div style="padding: 15px; background-color: #f8f9ff; border-radius: 8px; margin-top: 10px;">
+                    <p id="notesContent">Sin notas adicionales.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userEmail = localStorage.getItem('userEmail') || 'usuario@ejemplo.com';
+            document.getElementById('userEmail').textContent = userEmail;
+
+            const userInitial = userEmail.charAt(0).toUpperCase();
+            document.getElementById('userAvatar').textContent = userInitial;
+
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (!isLoggedIn || isLoggedIn !== 'true') {
+                window.location.href = '../index.html';
+            }
 
 
-        <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const userEmail = localStorage.getItem('userEmail') || 'usuario@ejemplo.com';
-        document.getElementById('userEmail').textContent = userEmail;
-        
-        // Obtener la inicial para el avatar
-        const userInitial = userEmail.charAt(0).toUpperCase();
-        document.getElementById('userAvatar').textContent = userInitial;
-        
-        // Verificar si el usuario está logueado
-        const isLoggedIn = localStorage.getItem('isLoggedIn');
-        if (!isLoggedIn || isLoggedIn !== 'true') {
-            window.location.href = '../index.html';
-        }
-        
-        // Manejar cierre de sesión
-        document.querySelector('a[href="../index.html"]').addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Limpiar datos de sesión
-            localStorage.removeItem('userEmail');
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('todoTasks'); // Opcional: limpiar tareas
-            
-            // Redirigir al login
-            window.location.href = '../index.html';
+            const logoutLink = document.querySelector('a[href="../index.html"]');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('todoTasks');
+                    localStorage.removeItem('selectedContact');
+
+                    window.location.href = '../index.html';
+                });
+            }
+
+
+            const selectedContact = JSON.parse(localStorage.getItem('selectedContact'));
+
+            if (!selectedContact) {
+                window.location.href = 'contactos.html';
+                return;
+            }
+
+
+            displayContactDetails(selectedContact);
+
+
+            document.getElementById('btnEditar').addEventListener('click', function () {
+                editContact(selectedContact);
+            });
+
+
+            document.getElementById('btnEliminar').addEventListener('click', function () {
+                deleteContact(selectedContact.id);
+            });
+
+
+            function displayContactDetails(contact) {
+                document.getElementById('contactAvatar').textContent = contact.initials || '??';
+                document.getElementById('contactName').textContent = contact.fullName || 'Sin nombre';
+                document.getElementById('contactCategory').textContent = getCategoryLabel(contact.category);
+
+
+                let contactInfoHTML = '';
+
+                if (contact.phone) {
+                    contactInfoHTML += `
+                        <li>
+                            <i class="fas fa-phone"></i>
+                            <span class="details-label">Teléfono:</span>
+                            <span>${contact.phone}</span>
+                        </li>`;
+                }
+
+                if (contact.email) {
+                    contactInfoHTML += `
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <span class="details-label">Correo:</span>
+                            <span>${contact.email}</span>
+                        </li>`;
+                }
+
+                if (contact.company) {
+                    contactInfoHTML += `
+                        <li>
+                            <i class="fas fa-building"></i>
+                            <span class="details-label">Empresa:</span>
+                            <span>${contact.company}</span>
+                        </li>`;
+                }
+
+                if (contact.position) {
+                    contactInfoHTML += `
+                        <li>
+                            <i class="fas fa-briefcase"></i>
+                            <span class="details-label">Puesto:</span>
+                            <span>${contact.position}</span>
+                        </li>`;
+                }
+
+                if (contact.address) {
+                    contactInfoHTML += `
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span class="details-label">Dirección:</span>
+                            <span>${contact.address}</span>
+                        </li>`;
+                }
+
+                document.getElementById('contactInfoList').innerHTML = contactInfoHTML;
+
+
+                if (contact.notes && contact.notes.trim() !== '') {
+                    document.getElementById('notesContent').textContent = contact.notes;
+                } else {
+                    document.getElementById('notesSection').style.display = 'none';
+                }
+            }
+
+
+            function editContact(contact) {
+
+                localStorage.setItem('contactToEdit', JSON.stringify(contact));
+
+
+                const newName = prompt('Editar nombre completo:', contact.fullName || '');
+                if (newName === null) return; // Usuario canceló
+
+                const newPhone = prompt('Editar teléfono:', contact.phone || '');
+                if (newPhone === null) return;
+
+                const newEmail = prompt('Editar email:', contact.email || '');
+                if (newEmail === null) return;
+
+                const newCompany = prompt('Editar empresa:', contact.company || '');
+                if (newCompany === null) return;
+
+                const newPosition = prompt('Editar puesto:', contact.position || '');
+                if (newPosition === null) return;
+
+                const newNotes = prompt('Editar notas:', contact.notes || '');
+                if (newNotes === null) return;
+
+
+                const categories = ['family', 'friend', 'work', 'other'];
+                const categoryNames = ['Familiar', 'Amigo', 'Colega de trabajo', 'Otro'];
+                let categoryMessage = 'Selecciona categoría:\n';
+                categoryNames.forEach((name, index) => {
+                    categoryMessage += `${index + 1}. ${name}\n`;
+                });
+
+                const categoryChoice = prompt(categoryMessage + '\nIngresa el número (1-4):',
+                    categories.indexOf(contact.category) + 1);
+
+                if (categoryChoice === null) return;
+
+                const newCategory = categories[parseInt(categoryChoice) - 1] || contact.category;
+
+
+                const updatedContact = {
+                    ...contact,
+                    fullName: newName.trim(),
+                    initials: getInitials(newName.trim()),
+                    phone: newPhone.trim(),
+                    email: newEmail.trim(),
+                    company: newCompany.trim(),
+                    position: newPosition.trim(),
+                    notes: newNotes.trim(),
+                    category: newCategory
+                };
+
+
+                updateContactInStorage(updatedContact);
+
+
+                displayContactDetails(updatedContact);
+
+                alert('¡Contacto actualizado exitosamente!');
+            }
+
+
+            function deleteContact(contactId) {
+                if (!confirm('¿Estás seguro de que quieres eliminar este contacto?\nEsta acción no se puede deshacer.')) {
+                    return;
+                }
+
+
+                let contacts = JSON.parse(localStorage.getItem('contacts')) || [];
+
+
+                contacts = contacts.filter(contact => contact.id !== contactId);
+
+
+                localStorage.setItem('contacts', JSON.stringify(contacts));
+
+
+                localStorage.removeItem('selectedContact');
+
+                alert('¡Contacto eliminado exitosamente!');
+
+
+                window.location.href = 'contactos.html';
+            }
+
+
+            function updateContactInStorage(updatedContact) {
+                let contacts = JSON.parse(localStorage.getItem('contacts')) || [];
+
+                const index = contacts.findIndex(contact => contact.id === updatedContact.id);
+
+                if (index !== -1) {
+                    contacts[index] = updatedContact;
+                    localStorage.setItem('contacts', JSON.stringify(contacts));
+
+                    localStorage.setItem('selectedContact', JSON.stringify(updatedContact));
+                }
+            }
+
+            function getInitials(fullName) {
+                const names = fullName.split(' ');
+                if (names.length >= 2) {
+                    return (names[0].charAt(0) + names[1].charAt(0)).toUpperCase();
+                }
+                return fullName.substring(0, 2).toUpperCase();
+            }
+
+            function getCategoryLabel(category) {
+                const categories = {
+                    'family': 'Familiar',
+                    'friend': 'Amigo',
+                    'work': 'Colega de trabajo',
+                    'other': 'Otro'
+                };
+                return categories[category] || 'Contacto';
+            }
         });
-    });
-</script>
+    </script>
+</body>
+
+</html>
