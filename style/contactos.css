@@ -12,7 +12,6 @@ body {
     line-height: 1.6;
 }
 
-/* Header y navegación */
 .header {
     background: linear-gradient(to right, #2575fc, #6a11cb);
     color: white;
@@ -76,7 +75,6 @@ body {
     text-decoration: underline;
 }
 
-/* Menú de navegación */
 .nav-menu {
     background-color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
@@ -124,14 +122,12 @@ body {
     font-size: 18px;
 }
 
-/* Contenedor principal */
 .main-container {
     max-width: 1200px;
     margin: 30px auto;
     padding: 0 20px;
 }
 
-/* Título de página */
 .page-title {
     display: flex;
     justify-content: space-between;
@@ -147,7 +143,6 @@ body {
     gap: 10px;
 }
 
-/* Botones */
 .btn-primary {
     background: linear-gradient(to right, #2575fc, #6a11cb);
     color: white;
@@ -188,7 +183,6 @@ body {
     background-color: #5a6268;
 }
 
-/* Lista de contactos */
 .contacts-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -273,7 +267,6 @@ body {
     font-size: 14px;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .nav-links {
         flex-direction: column;

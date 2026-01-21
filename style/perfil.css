@@ -12,7 +12,7 @@ body {
     line-height: 1.6;
 }
 
-/* Header y navegación */
+
 .header {
     background: linear-gradient(to right, #2575fc, #6a11cb);
     color: white;
@@ -76,7 +76,7 @@ body {
     text-decoration: underline;
 }
 
-/* Menú de navegación */
+
 .nav-menu {
     background-color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
@@ -124,14 +124,14 @@ body {
     font-size: 18px;
 }
 
-/* Contenedor principal */
+
 .main-container {
     max-width: 1200px;
     margin: 30px auto;
     padding: 0 20px;
 }
 
-/* Título de página */
+
 .page-title {
     display: flex;
     justify-content: space-between;
@@ -147,7 +147,7 @@ body {
     gap: 10px;
 }
 
-/* Contenedor del perfil */
+
 .profile-container {
     display: flex;
     gap: 30px;
@@ -155,7 +155,7 @@ body {
     margin: 0 auto;
 }
 
-/* Panel lateral del perfil */
+
 .profile-sidebar {
     flex: 1;
     background-color: white;
@@ -227,7 +227,7 @@ body {
     margin-bottom: 25px;
 }
 
-/* Estadísticas del perfil */
+
 .profile-stats {
     display: flex;
     justify-content: space-around;
@@ -255,7 +255,7 @@ body {
     margin-top: 5px;
 }
 
-/* Botón de editar perfil */
+
 .btn-edit-profile {
     width: 100%;
     background: linear-gradient(to right, #2575fc, #6a11cb);
@@ -278,7 +278,7 @@ body {
     box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
 }
 
-/* Contenido principal del perfil */
+
 .profile-content {
     flex: 2;
     background-color: white;
@@ -298,7 +298,7 @@ body {
     border-bottom: 1px solid #eee;
 }
 
-/* Secciones del perfil */
+
 .profile-section {
     margin-bottom: 30px;
 }
@@ -314,7 +314,7 @@ body {
     font-size: 20px;
 }
 
-/* Lista de detalles del perfil */
+
 .profile-details {
     list-style: none;
 }
@@ -349,7 +349,7 @@ body {
     flex: 1;
 }
 
-/* Preferencias del usuario */
+
 .preferences-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -376,7 +376,7 @@ body {
     font-size: 15px;
 }
 
-/* Acciones del perfil */
+
 .profile-actions {
     display: flex;
     gap: 15px;
@@ -421,7 +421,7 @@ body {
     background-color: #c82333;
 }
 
-/* Modal de edición (opcional) */
+
 .modal {
     display: none;
     position: fixed;
@@ -474,7 +474,7 @@ body {
     color: #333;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
     .nav-links {
         flex-direction: column;

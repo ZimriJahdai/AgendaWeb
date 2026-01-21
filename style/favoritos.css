@@ -12,7 +12,7 @@ body {
     line-height: 1.6;
 }
 
-/* Header y navegación */
+
 .header {
     background: linear-gradient(to right, #2575fc, #6a11cb);
     color: white;
@@ -76,7 +76,6 @@ body {
     text-decoration: underline;
 }
 
-/* Menú de navegación */
 .nav-menu {
     background-color: white;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);

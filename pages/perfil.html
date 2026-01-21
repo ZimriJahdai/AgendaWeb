@@ -137,12 +137,10 @@
             const userEmail = localStorage.getItem('userEmail') || 'usuario@ejemplo.com';
             document.getElementById('userEmail').textContent = userEmail;
             
-            // Actualizar todos los lugares donde aparece el email
             document.querySelectorAll('#profileEmail, #accountEmail').forEach(el => {
                 el.textContent = userEmail;
             });
             
-            // Obtener nombre del usuario del email
             const userName = userEmail.split('@')[0];
             const formattedName = userName.charAt(0).toUpperCase() + userName.slice(1);
             document.getElementById('profileName').textContent = formattedName;
@@ -181,7 +179,7 @@
             
             localStorage.removeItem('userEmail');
             localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('todoTasks'); // Opcional: limpiar tareas
+            localStorage.removeItem('todoTasks'); 
             
             
             window.location.href = '../index.html';
